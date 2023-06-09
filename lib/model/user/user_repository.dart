@@ -30,4 +30,15 @@ class UserRepository {
       return ResponseDTO(code: -1, msg: "유저네임 혹은 비번이 틀렸습니다");
     }
   }
+
+  Future<ResponseDTO> fetchJoin(JoinReqDTO joinReqDTO) async {
+    try{
+      Response response = await dio.post("/join", data: joinReqDTO.toJson());
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+      responseDTO.data = User.fromJson(responseDTO.data);
+      return responseDTO;
+    }catch(e){
+      return ResponseDTO(code: -1, msg: "중복되는 유저명입니다.");
+    }
+  }
 }
