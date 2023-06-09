@@ -68,4 +68,17 @@ class PostRepository {
     }
   }
 
+  Future<ResponseDTO> fetchDelete(String jwt, int id) async {
+    try {
+      // 통신
+      Response response = await dio.delete("/post/$id",
+          options: Options(headers: {"Authorization": "$jwt"}));
+      // 응답 받은 데이터 파싱
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+
+      return responseDTO;
+    } catch (e) {
+      return ResponseDTO(code: -1, msg: "실패 : ${e}");
+    }
+  }
 }

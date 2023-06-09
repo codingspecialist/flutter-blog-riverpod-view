@@ -51,4 +51,19 @@ class PostListPageViewModel extends StateNotifier<PostListPageModel?>{
     }
   }
 
+  void notifyRemove(int id) async {
+
+    SessionUser sessionUser = ref.read(sessionProvider);
+    ResponseDTO responseDTO = await PostRepository().fetchDelete(sessionUser.jwt!, id);
+
+    if(responseDTO.code != 1) {
+      ScaffoldMessenger.of(mContext!).showSnackBar(SnackBar(content: Text("게시물 삭제 실패 : ${responseDTO.msg}")));
+
+    } else {
+      List<Post> posts = state!.posts;
+      List<Post> newPosts = posts.where((e) => e.id != id).toList();
+
+      state = PostListPageModel(posts: newPosts);
+    }
+  }
 }
