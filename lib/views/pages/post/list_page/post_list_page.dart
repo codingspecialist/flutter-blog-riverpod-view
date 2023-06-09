@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/views/components/custom_navigator.dart';
 import 'package:flutter_blog_2/views/pages/post/list_page/components/post_list_body.dart';
+import 'package:flutter_blog_2/views/pages/post/list_page/post_list_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostListPage extends StatelessWidget {
+class PostListPage extends ConsumerWidget {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   PostListPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       key: scaffoldKey,
       drawer: CustomNavigation(scaffoldKey),
@@ -19,6 +21,7 @@ class PostListPage extends StatelessWidget {
       body: RefreshIndicator(
         key: refreshKey,
         onRefresh: () async {
+          ref.read(postListPageProvider.notifier).notifyInit();
         },
         child: PostListBody(),
       ),
