@@ -41,4 +41,16 @@ class UserRepository {
       return ResponseDTO(code: -1, msg: "중복되는 유저명입니다.");
     }
   }
+
+  Future<ResponseDTO> fetchUser(String jwt, int id) async {
+    try {
+      Response response = await dio.get("/user/$id",
+          options: Options(headers: {"Authorization": "$jwt"}));
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+      responseDTO.data = User.fromJson(responseDTO.data);
+      return responseDTO;
+    } catch (e) {
+      return ResponseDTO(code: -1, msg: "실패 : ${e}");
+    }
+  }
 }
