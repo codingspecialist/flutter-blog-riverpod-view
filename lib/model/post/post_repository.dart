@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_blog_2/core/constants/http.dart';
+import 'package:flutter_blog_2/dto/post_request.dart';
 import 'package:flutter_blog_2/dto/response_dto.dart';
 import 'package:flutter_blog_2/model/post/post.dart';
 import 'package:logger/logger.dart';
@@ -39,6 +40,24 @@ class PostRepository {
       Response response = await dio.get("/post/$id",
           options: Options(headers: {"Authorization": "$jwt"}));
 
+      // 응답 받은 데이터 파싱
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+      responseDTO.data = Post.fromJson(responseDTO.data);
+
+      return responseDTO;
+    } catch (e) {
+      return ResponseDTO(code: -1, msg: "실패 : ${e}");
+    }
+  }
+
+  Future<ResponseDTO> fetchSave(String jwt, PostSaveReqDTO postSaveReqDTO) async {
+    try {
+      // 통신
+      Response response = await dio.post(
+          "/post",
+          options: Options(headers: {"Authorization": "$jwt"}),
+          data: postSaveReqDTO.toJson()
+      );
       // 응답 받은 데이터 파싱
       ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
       responseDTO.data = Post.fromJson(responseDTO.data);
