@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/core/constants/move.dart';
 import 'package:flutter_blog_2/core/constants/size.dart';
 import 'package:flutter_blog_2/core/util/validator_util.dart';
+import 'package:flutter_blog_2/dto/user_request.dart';
+import 'package:flutter_blog_2/provider/user_provider.dart';
 import 'package:flutter_blog_2/views/components/custom_auth_text_form_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final _username = TextEditingController();
   final _password = TextEditingController();
@@ -12,7 +14,7 @@ class LoginForm extends StatelessWidget {
   LoginForm({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Form(
       key: _formKey,
       child: Column(
@@ -34,7 +36,8 @@ class LoginForm extends StatelessWidget {
           TextButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                Navigator.popAndPushNamed(context, Move.postListPage);
+                LoginReqDTO loginReqDTO = LoginReqDTO(username: _username.text, password: _password.text);
+                ref.read(userProvider).login(loginReqDTO);
               }
             },
             child: const Text("Login"),
