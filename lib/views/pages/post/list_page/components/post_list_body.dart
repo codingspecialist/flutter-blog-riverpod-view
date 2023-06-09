@@ -25,7 +25,7 @@ class PostListBody extends ConsumerWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => PostDetailPage()));
+                    builder: (_) => PostDetailPage(posts[index].id)));
           },
           child: PostListItem(posts[index]),
         );
