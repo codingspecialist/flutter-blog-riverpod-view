@@ -22,6 +22,24 @@ class UserProvider {
   
   UserProvider(this.ref);
 
+  // 회원 가입
+  void join(JoinReqDTO reqDTO) async {
+    Logger().d("join");
+
+    // 1. Repository 메소드를 호출하여 응답 결과 및 데이터 받음.
+    ResponseDTO responseDTO = await UserRepository().fetchJoin(reqDTO);
+
+    // 응답 결과 값이 1일 경우
+    if(responseDTO.code == 1) {
+      // 2. 페이지 이동
+      Navigator.pushNamed(mContext!, Move.loginPage);
+
+    }else {
+      // 실패 시 스낵바
+      ScaffoldMessenger.of(mContext!).showSnackBar(SnackBar(content: Text("회원가입 실패")));
+    }
+  }
+
   // 로그인
   void login(LoginReqDTO loginReqDTO) async {
     Logger().d("login");
