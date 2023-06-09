@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/dto/post_request.dart';
 import 'package:flutter_blog_2/dto/response_dto.dart';
 import 'package:flutter_blog_2/main.dart';
 import 'package:flutter_blog_2/model/post/post.dart';
@@ -28,6 +30,25 @@ class PostListPageViewModel extends StateNotifier<PostListPageModel?>{
     SessionUser sessionUser = ref.read(sessionProvider);
     ResponseDTO responseDTO = await PostRepository().fetchPostList(sessionUser.jwt!);
     state = PostListPageModel(posts: responseDTO.data);
+  }
+
+  void notifyAdd(PostSaveReqDTO reqDTO) async {
+    Logger().d("notifyAdd");
+
+    SessionUser sessionUser = ref.read(sessionProvider);
+    ResponseDTO responseDTO = await PostRepository().fetchSave(sessionUser.jwt!, reqDTO);
+
+    if(responseDTO.code != 1) {
+      ScaffoldMessenger.of(mContext!).showSnackBar(SnackBar(content: Text("게시물 작성 실패 : ${responseDTO.msg}")));
+
+    } else {
+      Post newPost = responseDTO.data;
+
+      List<Post> posts = state!.posts;
+      List<Post> newPosts = [newPost, ...posts];
+
+      state = PostListPageModel(posts: newPosts);
+    }
   }
 
 }
