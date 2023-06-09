@@ -1,3 +1,9 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_blog_2/core/constants/http.dart';
+import 'package:flutter_blog_2/dto/response_dto.dart';
+import 'package:flutter_blog_2/model/post/post.dart';
+import 'package:logger/logger.dart';
+
 class PostRepository {
   static final PostRepository _instance = PostRepository._single();
 
@@ -6,5 +12,26 @@ class PostRepository {
   }
 
   PostRepository._single();
+
+  // 목적 : 통신 + 파싱
+  Future<ResponseDTO> fetchPostList(String jwt) async {
+    Logger().d("fetchPostList");
+    try {
+      // 통신
+      Response response = await dio.get("/post",
+          options: Options(headers: {"Authorization": "$jwt"}));
+
+      // 응답 받은 데이터 파싱
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+      List<dynamic> mapList = responseDTO.data as List<dynamic>;
+      List<Post> postList = mapList.map((e) => Post.fromJson(e)).toList();
+      responseDTO.data = postList;
+
+      return responseDTO;
+
+    } catch (e) {
+      return ResponseDTO(code: -1, msg: "실패 : ${e}");
+    }
+  }
 
 }
