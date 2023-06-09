@@ -66,4 +66,13 @@ class PostListPageViewModel extends StateNotifier<PostListPageModel?>{
       state = PostListPageModel(posts: newPosts);
     }
   }
+
+  void notifyUpdate(Post post) async {
+
+    List<Post> posts = state!.posts;
+    List<Post> newPosts = posts.map((e) => e.id == post.id ? post : e).toList();
+
+    state = PostListPageModel(posts: newPosts);
+
+  }
 }
