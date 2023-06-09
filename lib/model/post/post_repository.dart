@@ -28,7 +28,22 @@ class PostRepository {
       responseDTO.data = postList;
 
       return responseDTO;
+    } catch (e) {
+      return ResponseDTO(code: -1, msg: "실패 : ${e}");
+    }
+  }
 
+  Future<ResponseDTO> fetchPost(String jwt, int id) async {
+    try {
+      // 통신
+      Response response = await dio.get("/post/$id",
+          options: Options(headers: {"Authorization": "$jwt"}));
+
+      // 응답 받은 데이터 파싱
+      ResponseDTO responseDTO = ResponseDTO.fromJson(response.data);
+      responseDTO.data = Post.fromJson(responseDTO.data);
+
+      return responseDTO;
     } catch (e) {
       return ResponseDTO(code: -1, msg: "실패 : ${e}");
     }
